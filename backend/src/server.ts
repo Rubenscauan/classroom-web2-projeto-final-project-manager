@@ -1,12 +1,27 @@
 import "reflect-metadata";
-import express from "express";
+import express, { ErrorRequestHandler, NextFunction, Request, Response } from "express";
+import { AppDataSource } from "./data-source";
+import { createRouter } from "./routes";
 
 const app = express();
 app.use(express.json());
 
-app.get("/", (_req, res) => {
-  return res.json({ ok: true, message: "Api Back funcionando" });
-});
-
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
+const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+  const status = (err as any).status ?? 500;
+  res.status(status).json({ message: err.message });
+};
+
+AppDataSource.initialize()
+  .then(() => {
+    app.use(createRouter(AppDataSource));
+
+    app.use(errorHandler);
+
+    app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+  })
+  .catch((error) => {
+    console.error("Erro ao iniciar o banco:", error);
+    process.exit(1);
+  });

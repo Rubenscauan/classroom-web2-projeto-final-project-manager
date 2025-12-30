@@ -10,16 +10,25 @@ import { Project } from "./Project";
 import { Task } from "./Task";
 import { Comment } from "./Comment";
 
+export enum UserRole {
+  Admin = "admin",
+  Manager = "manager",
+  Member = "member",
+}
+
 @Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ type: "varchar", length: 120 })
   name!: string;
 
-  @Column({unique: true })
+  @Column({ type: "varchar", length: 160, unique: true })
   email!: string;
+
+  @Column({ type: "text", default: UserRole.Member })
+  role!: UserRole;
 
   @OneToMany(() => Project, (project) => project.owner)
   projects!: Project[];

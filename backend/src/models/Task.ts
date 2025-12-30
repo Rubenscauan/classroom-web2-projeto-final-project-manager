@@ -18,7 +18,7 @@ export class Task {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ length: 180 })
+  @Column({ type: "varchar", length: 180 })
   title!: string;
 
   @Column({ type: "text", nullable: true })
@@ -37,21 +37,21 @@ export class Task {
   @JoinColumn({ name: "projectId" })
   project!: Project;
 
-  @Column()
+  @Column({ type: "integer" })
   projectId!: number;
 
   @ManyToOne(() => Sprint, (sprint) => sprint.tasks, { nullable: true })
   @JoinColumn({ name: "sprintId" })
   sprint?: Sprint | null;
 
-  @Column({ nullable: true })
+  @Column({ type: "integer", nullable: true })
   sprintId?: number | null;
 
   @ManyToOne(() => User, (user) => user.tasks, { nullable: true })
   @JoinColumn({ name: "assigneeId" })
   assignee?: User | null;
 
-  @Column({ nullable: true })
+  @Column({ type: "integer", nullable: true })
   assigneeId?: number | null;
 
   @OneToMany(() => Comment, (comment) => comment.task)

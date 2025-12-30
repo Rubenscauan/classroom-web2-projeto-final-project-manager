@@ -22,14 +22,14 @@ export class Comment {
   @JoinColumn({ name: "taskId" })
   task!: Task;
 
-  @Column()
+  @Column({ type: "integer" })
   taskId!: number;
 
   @ManyToOne(() => User, (user) => user.comments, { nullable: false })
   @JoinColumn({ name: "authorId" })
   author!: User;
 
-  @Column()
+  @Column({ type: "integer" })
   authorId!: number;
 
   @CreateDateColumn()

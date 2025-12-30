@@ -16,7 +16,7 @@ export class Sprint {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ type: "varchar", length: 120 })
   name!: string;
 
   @Column({ type: "date", nullable: true })
@@ -29,7 +29,7 @@ export class Sprint {
   @JoinColumn({ name: "projectId" })
   project!: Project;
 
-  @Column()
+  @Column({ type: "integer" })
   projectId!: number;
 
   @OneToMany(() => Task, (task) => task.sprint)
