@@ -5,7 +5,16 @@ import { AppDataSource } from "./data-source";
 import { createRouter } from "./routes";
 
 const app = express();
+<<<<<<< Updated upstream
 app.use(cors());
+=======
+<<<<<<< Updated upstream
+=======
+app.use(cors(
+  { origin: "http://localhost:5173", credentials: true }
+));
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 app.use(express.json());
 
 const PORT = process.env.PORT || 8080;
