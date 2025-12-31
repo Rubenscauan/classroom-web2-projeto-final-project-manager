@@ -15,13 +15,26 @@ const props = defineProps({
 <template>
     <Container>
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <p class="text-4xl font-bold text-black">Tarefas da Sprint {{ sprintId }}</p> <!-- Na verdade seria sprintd.project_id -->
-            <router-link
-                :to="{ name: 'Sprint-listar' , params: { projectId: 1 } }"
-                class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
-            >
-                ← Voltar
-            </router-link>
+            <div>
+                <p class="text-4xl font-bold text-black">Tarefas da Sprint {{ sprintId }}</p> <!-- Na verdade seria sprintd.project_id -->
+                <button>
+                    <router-link
+                        :to="{ name: 'Tarefa-criar', params: { sprintId: sprintId } }"
+                        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 my-4 rounded-full text-sm shadow-sm transition"
+                    >
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Criar Nova Tarefa</span>
+                    </router-link>
+                </button>
+            </div>
+            <div>
+                <router-link
+                    :to="{ name: 'Sprint-listar' , params: { projectId: 1 } }"
+                    class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                >
+                    ← Voltar
+                </router-link>
+            </div>
         </div>
          <div class="mt-6 overflow-x-auto shadow-md rounded-lg">
             <table class="min-w-full bg-white border border-gray-200 rounded-lg">
