@@ -1,7 +1,9 @@
 import { Repository } from "typeorm";
+import bcrypt from "bcryptjs";
 import { User } from "../models/User";
 import {
   AuthUser,
+  BadRequestError,
   ForbiddenError,
   NotFoundError,
   assertAdmin,
@@ -12,6 +14,7 @@ import {
 export type CreateUserInput = {
   name: string;
   email: string;
+  password?: string;
 };
 
 export type UpdateUserInput = {
@@ -23,24 +26,38 @@ export class UserService {
   constructor(private userRepo: Repository<User>) {}
 
   async register(input: CreateUserInput): Promise<User> {
+    if (!input.password) {
+      throw new BadRequestError("Password is required");
+    }
+
     const user = this.userRepo.create({
       name: input.name,
       email: input.email,
+      passwordHash: await bcrypt.hash(input.password, 10),
     });
 
-    return this.userRepo.save(user);
+    const saved = await this.userRepo.save(user);
+    delete (saved as User & { passwordHash?: string }).passwordHash;
+    return saved;
   }
 
   async createUser(input: CreateUserInput, currentUser?: AuthUser): Promise<User> {
     assertAuthenticated(currentUser);
     assertAdmin(currentUser);
 
+    if (!input.password) {
+      throw new BadRequestError("Password is required");
+    }
+
     const user = this.userRepo.create({
       name: input.name,
       email: input.email,
+      passwordHash: await bcrypt.hash(input.password, 10),
     });
 
-    return this.userRepo.save(user);
+    const saved = await this.userRepo.save(user);
+    delete (saved as User & { passwordHash?: string }).passwordHash;
+    return saved;
   }
 
   async listAll(currentUser?: AuthUser): Promise<User[]> {

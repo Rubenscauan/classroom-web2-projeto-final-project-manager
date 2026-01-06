@@ -11,11 +11,13 @@ import { ProjectService } from "./services/ProjectService";
 import { SprintService } from "./services/SprintService";
 import { TaskService } from "./services/TaskService";
 import { CommentService } from "./services/CommentService";
+import { AuthService } from "./services/AuthService";
 import { UserController } from "./controllers/UserController";
 import { ProjectController } from "./controllers/ProjectController";
 import { SprintController } from "./controllers/SprintController";
 import { TaskController } from "./controllers/TaskController";
 import { CommentController } from "./controllers/CommentController";
+import { AuthController } from "./controllers/AuthController";
 
 export const createRouter = (dataSource: DataSource) => {
   const router = Router();
@@ -44,18 +46,22 @@ export const createRouter = (dataSource: DataSource) => {
     dataSource.getRepository(Project),
     dataSource.getRepository(ProjectMember)
   );
+  const authService = new AuthService(dataSource.getRepository(User));
 
   const userController = new UserController(userService);
   const projectController = new ProjectController(projectService);
   const sprintController = new SprintController(sprintService);
   const taskController = new TaskController(taskService);
   const commentController = new CommentController(commentService);
+  const authController = new AuthController(authService);
 
   router.get("/", (_req, res) => {
     res.json({ ok: true, message: "Api Back funcionando" });
   });
 
   router.post("/users/register", userController.register);
+  router.post("/auth/login", authController.login);
+  router.post("/auth/logout", authController.logout);
   router.post("/users", userController.create);
   router.get("/users", userController.list);
   router.get("/users/:id", userController.getById);

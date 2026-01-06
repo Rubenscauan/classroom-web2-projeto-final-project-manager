@@ -26,6 +26,9 @@ export class User {
   @Column({ type: "varchar", length: 160, unique: true })
   email!: string;
 
+  @Column({ type: "varchar", length: 200, select: false })
+  passwordHash!: string;
+
   @OneToMany(() => Project, (project) => project.owner)
   projects!: Project[];
 
