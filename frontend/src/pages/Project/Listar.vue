@@ -6,6 +6,10 @@ import ProjetoTable from '../../components/ProjetoTable.vue';
 
 const projects = ref([]);
 
+function handleDeleted(projectId) {
+  projects.value = projects.value.filter((project) => project.id !== projectId);
+}
+
 onMounted(async () => {
   projects.value = await ProjectService.list();
 });
@@ -14,6 +18,6 @@ onMounted(async () => {
 
 <template>
   <Container>
-    <ProjetoTable :projects="projects" />
+    <ProjetoTable :projects="projects" @deleted="handleDeleted" />
   </Container>
 </template>

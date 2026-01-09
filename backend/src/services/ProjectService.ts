@@ -1,5 +1,8 @@
 import { In, Repository } from "typeorm";
 import { Project } from "../models/Project";
+import { Comment } from "../models/Comment";
+import { Sprint } from "../models/Sprint";
+import { Task } from "../models/Task";
 import { User } from "../models/User";
 import { ProjectMember, ProjectRole } from "../models/ProjectMember";
 import {
@@ -169,7 +172,27 @@ export class ProjectService {
 
     await this.assertCanManageProject(project.id, currentUser);
 
-    await this.projectRepo.remove(project);
+    await this.projectRepo.manager.transaction(async (trx) => {
+      const taskRepo = trx.getRepository(Task);
+      const sprintRepo = trx.getRepository(Sprint);
+      const commentRepo = trx.getRepository(Comment);
+      const memberRepo = trx.getRepository(ProjectMember);
+
+      const taskIds = await taskRepo.find({
+        select: { id: true },
+        where: { projectId: project.id },
+      });
+      const taskIdList = taskIds.map((task) => task.id);
+
+      if (taskIdList.length) {
+        await commentRepo.delete({ taskId: In(taskIdList) });
+      }
+
+      await taskRepo.delete({ projectId: project.id });
+      await sprintRepo.delete({ projectId: project.id });
+      await memberRepo.delete({ projectId: project.id });
+      await trx.getRepository(Project).delete({ id: project.id });
+    });
   }
 
   private async assertCanManageProject(

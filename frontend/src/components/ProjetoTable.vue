@@ -24,7 +24,9 @@ async function handleDelete(id) {
     const res = await ProjectService.delete(id)
     console.log('Resposta da API:', res)
 
-    router.replace({ name: 'Projects-listar' })
+    //router.replace({ name: 'Projects-listar' }) todo: mudar para futuramente emitir um estado e atualizar
+    router.go(0)
+
   } catch (error) {
     console.error('Erro no delete:', error)
   }
