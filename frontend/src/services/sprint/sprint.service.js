@@ -2,7 +2,7 @@ import api from "../axios";
 
 export const SprintService = {
   async listByProject(projectId) {
-    const response = await api.get("/sprints");
+    const response = await api.get("/sprints", { params: { projectId } });
     return response.data;
   },
 
